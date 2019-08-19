@@ -1,6 +1,5 @@
 # Membrane-Proteins-Tutorial-Simulation-using-NAMD-and-VMD
 
-
 #############################################################
 
 Main Source of the tutorial:
@@ -19,9 +18,9 @@ However, you may want to keep water molecules rigid, as the CHARMM force field w
 (1.1) Viewing and examining the Protein.
 
 VMD Tcl commands:
-
+```
 mol new NPSR1_Asn107Ile_raw.pdb
-
+```
 Notes:
 - Different structural elements are divided into “chains” in the PDB file. look at the COMPND item.
 - Use the proper representation.
