@@ -32,11 +32,11 @@ Notes:
 (1.2) Generating PSF and PDB Files (Preparing PDB contains the coordinates alone without hydrogen)
 
 VMD Tcl commands:
-
+```
 mol new NPSR1_Asn107Ile_raw.pdb
 set NPSR1 [atomselect top protein]
 $NPSR1 writepdb NPSR1_Asn107Ile.pdb
-
+```
 #create PSF
 #load pdb.then, use auto PSF generator and use (top all27 prot lipid.rtf) or C:/plugins/noarch/tcl/readcharmmtop1.2/top_all36_prot.rtf
 
