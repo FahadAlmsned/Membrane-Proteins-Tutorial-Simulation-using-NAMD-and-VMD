@@ -348,9 +348,53 @@ exit
 namd2 +p8 RUN_NPRS1_popcwimineq-01.conf > RUN_NPRS1_popcwimineq-01.log.out
 ```
 
+(3.2) Minimization and Equilibration with Protein Constrained.
 
+- The system has many unnatural atomic positions.
+- second run will be a “minimization” run, which guides the system to the nearest local energy minimum in configuration space.
+- Minimization will be then followed by equilibration with the protein constrained, so as to permit the environment to relax first.
 
+- Before performing the simulation, we need to generate a file for the harmonic constraints on the protein.
+- Choose (fix watexcept {})
 
+VMD Tcl commands:
+```
+mol new NPRS1_popcwi.psf
+mol addfile NPRS1_popcwi.pdb
+set all [atomselect top "all"]
+$all set beta 0
+set prot [atomselect top "protein"]
+$prot set beta 1
+$all writepdb NPRS1_popcwi.cnst
+exit
+```
 
+```
+namd2 +p8 RUN_NPRS1_popcwimineq-02.conf > RUN_NPRS1_popcwimineq-02.log.out
+```
 
+(3.3) Equilibration with Protein Released.
 
+- After minimization and equilibration with the protein constrained, we hopefully have a system in which lipids are well packed around the protein, while water has not entered forbidden regions -> next -> equilibrate the whole system.
+- We have eliminated the minimization step in the present simulation.
+
+VMD Tcl commands:
+```
+namd2 +p8 RUN_NPRS1_popcwimineq-03.conf > RUN_NPRS1_popcwimineq-03.log.out
+```
+
+- After the simulation is done, your system should be equilibrated fairly well. You can monitor the stability of the protein through the computation of RMSDs and by looking at the resulting trajectory with VMD.
+
+(3.4) Production Runs
+
+- Now that the protein has been equilibrated, we are ready to perform production runs.
+- There will be one main difference with the previous simulations ->  # Constant Pressure Control (useConstantArea command = yes)
+
+VMD Tcl commands:
+```
+namd2 +p8 RUN_NPRS1_popcwimineq-04.conf > RUN_NPRS1_popcwimineq-04.log.out
+```
+
+###########
+Simulation of membrane bilayers has shown that the current CHARMM forcefield parameters do no reproduce the experimentally observed area per lipid over long MD trajectories. During the previous simulation steps, we let the are in the xy-plane fluctuate to permit packing of lipids against the protein. However, after good packing has been observed, one should keep the area in the xy-plane constant. Ideally, one should also compute the effective area per lipid in the system by computing the area of the simulations cell and subtracting from it the protein area.
+##########
