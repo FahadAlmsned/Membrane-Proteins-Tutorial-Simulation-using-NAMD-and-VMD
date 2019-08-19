@@ -313,6 +313,8 @@ mol addfile NPRS1_popcwi.pdb
 
 (3.1) Melting of Lipid Tails (simulation in which everything except lipid tails, is fixed to induce the appropriate disorder of a fluid-like bilayer )
 
+VMD Tcl commands:
+
 mol delete all
 mol new NPRS1_popcwi.psf
 mol addfile NPRS1_popcwi.pdb
@@ -325,11 +327,13 @@ $fixed set beta 1
 $all writepdb NPRS1_popcwi.fix
 exit
 
-# Stage 1 (check RUN_NPRS1_popcwimineq-01.conf)
-# use findbox.tcl -> chnage Periodic Boundary Conditions in RUN_NPRS1_popcwimineq-01.conf.
-# check Fixed Atoms Constraint -> name.fix
-# Minimization -> 1000 (NAMD will run 1000 steps of minimization, then it will reinitiate velocities according to the desired temperature)
-# run 250000 ;# 0.5 ns (using a 2 fs timestep)
+- Stage 1 (check RUN_NPRS1_popcwimineq-01.conf)
+- use findbox.tcl -> chnage Periodic Boundary Conditions in RUN_NPRS1_popcwimineq-01.conf.
+- check Fixed Atoms Constraint -> name.fix
+- Minimization -> 1000 (NAMD will run 1000 steps of minimization, then it will reinitiate velocities according to the desired temperature)
+- run 250000 ;# 0.5 ns (using a 2 fs timestep)
+
+VMD Tcl commands:
 
 mol new NPRS1_popcwi.psf
 mol addfile NPRS1_popcwi.pdb
