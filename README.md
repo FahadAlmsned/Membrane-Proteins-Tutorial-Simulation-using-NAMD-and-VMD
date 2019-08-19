@@ -37,17 +37,18 @@ mol new NPSR1_Asn107Ile_raw.pdb
 set NPSR1 [atomselect top protein]
 $NPSR1 writepdb NPSR1_Asn107Ile.pdb
 ```
-#create PSF
-#load pdb.then, use auto PSF generator and use (top all27 prot lipid.rtf) or C:/plugins/noarch/tcl/readcharmmtop1.2/top_all36_prot.rtf
+-create PSF
+-load pdb.then, use auto PSF generator and use (top all27 prot lipid.rtf) or C:/plugins/noarch/tcl/readcharmmtop1.2/top_all36_prot.rtf
 
 VMD Tcl commands:
-
+```
 mol new NPSR1_Asn107Ile.pdb
+```
 
 (1.3) Water box (Use add solvation box or command line)
 
 VMD Tcl commands:
-
+```
 file delete NPSR1_Asn107Ile.pdb
 file delete NPSR1_Asn107Ile_autopsf.log
 file delete NPSR1_Asn107Ile_autopsf_formatted.pdb
@@ -56,7 +57,7 @@ mol new NPSR1_Asn107Ile_autopsf.psf
 mol addfile NPSR1_Asn107Ile_autopsf.pdb
 
 solvate NPSR1_Asn107Ile_autopsf.psf NPSR1_Asn107Ile_autopsf.pdb -t 5 -o NPRS1_Sol_raw
-
+```
 
 (1.4) Remove unwanted water molecule (use hydrophobicity (by visualizing ResType)).
 
@@ -66,41 +67,41 @@ solvate NPSR1_Asn107Ile_autopsf.psf NPSR1_Asn107Ile_autopsf.pdb -t 5 -o NPRS1_So
 - To make selection easier, we will first center everything on origin. Then, water molecule selection.
 
 VMD Tcl commands:
-
+```
 mol new NPRS1_Sol_raw.psf
 mol addfile NPRS1_Sol_raw.pdb
 set all [atomselect top all]
 $all moveby [vecinvert [measure center $all]]
 display resetview
-
+```
 - Then, create the proper graphical representations (check notes). Now we will “mark” the water we don’t want to keep using thr B-factor field.
 
 VMD Tcl commands:
-
+```
 set solv [atomselect top "segname WT1"]
 $solv set beta 1
-
+```
 - unmark the waters we want to keep.
 
 VMD Tcl commands:
-
+```
 set seltext "segname WT1 and same residue as \
 ((y < -20) or (y > 20))"
 set sel [atomselect top $seltext]
 $sel set beta 0
-
+```
 - Make a list of these for the marked molecules.
 
 VMD Tcl commands:
-
+```
 set badwater [atomselect top "name OH2 and beta > 0"]
 set seglist [$badwater get segid]
 set reslist [$badwater get resid]
-
+```
 - Now we use psfgen to read the PSF and PDB files, and delete the residues we just marked:
 
 VMD Tcl commands:
-
+```
 mol delete all
 package require psfgen
 resetpsf
@@ -115,7 +116,7 @@ delatom $segid $resid
 
 writepdb NPRS1_Sol_bilayer.pdb
 writepsf NPRS1_Sol_bilayer.psf
-
+```
 - We now have a complete protein with water molecules in just the right places.
 
 #------------------------------------------------------------------------------------------
@@ -127,7 +128,7 @@ writepsf NPRS1_Sol_bilayer.psf
 (2.2) Alignment of Membrane and Protein
 
 VMD Tcl commands:
-
+```
 set popc [atomselect top all]
 set NPRS1mol [mol new NPRS1_Sol_bilayer.psf]
 mol addfile NPRS1_Sol_bilayer.pdb
@@ -141,11 +142,11 @@ display resetview
 
 $NPRS1 move [transaxis x -90]
 $NPRS1 writepdb NPRS1_temp.pdb
-
+```
 - combine the two temporary files into one set of PSF and PDB files:
 
 VMD Tcl commands:
-
+```
 mol delete all
 package require psfgen
 resetpsf
@@ -159,7 +160,7 @@ writepdb NPRS1_popc_raw.pdb
 
 file delete popc_TEMP.pdb
 file delete NPRS1_temp.pdb
-
+```
 - Load new files to visualize them.
 
 (2.3) Combination of Membrane and Protein -->  Make room for PDB in the membrane layer, so that the protein doesn’t overlap any lipid molecules.
@@ -167,7 +168,7 @@ file delete NPRS1_temp.pdb
 - We will again use the beta field of the atoms to mark the “bad lipids.”
 
 VMD Tcl commands:
-
+```
 mol delete all
 mol new NPRS1_popc_raw.psf
 mol addfile NPRS1_popc_raw.pdb
@@ -189,11 +190,12 @@ $sel3 set beta 1
 set badlipid [atomselect top "name P1 and beta > 0"]
 set seglistlipid [$badlipid get segid]
 set reslistlipid [$badlipid get resid]
+```
 
 - We must remove the water molecules overlapping with the protein:
 
 VMD Tcl commands:
-
+```
 set seltext4 "(water and not segname WCA WCB WCC WCD WF SOLV) \
 and same residue as within 3 of \
 ((same residue as (name P1 and beta>0)) or protein)"
@@ -206,11 +208,11 @@ $sel5 set beta 1
 set badwater [atomselect top "name OH2 and beta > 0"]
 set seglistwater [$badwater get segid]
 set reslistwater [$badwater get resid]
-
+```
 - Now, we delete the atoms as we did before:
 
 VMD Tcl commands:
-
+```
 mol delete all
 resetpsf
 readpsf NPRS1_popc_raw.psf
@@ -230,35 +232,35 @@ file delete NPRS1_popc_raw.psf
 file delete NPRS1_popc_raw.pdb
 file delete popc.psf
 file delete popc.pdb
-
+```
 (2.4) Solvation and Ionization of the whole system.
 
 - First, let’s use the minmax option of the measure command to see how big our water layer is:
 
 VMD Tcl commands:
-
+```
 mol delete all
 mol new NPRS1_popc.psf
 mol addfile NPRS1_popc.pdb
 set water [atomselect top water]
 measure minmax $water
-
+````
 - use minmax to guide the dim of the box.
 - The -b 1.5 option tells solvate to remove atoms within 1.5 °A of the solute
 
 VMD Tcl commands:
-
+```
 package require solvate
 solvate NPRS1_popc.psf NPRS1_popc.pdb -o NPRS1_popc_water_TEMP -b 1.5 -s WA \
 -minmax {{-50 -50 -50} {50 50 50}}
 
 file delete NPRS1_popc.psf
 file delete NPRS1_popc.pdb
-
+```
 - Remove water inside the lipid bilayer and around the protein atoms.
 
 VMD Tcl commands:
-
+```
 mol delete all
 mol new NPRS1_popc_water_TEMP.psf
 mol addfile NPRS1_popc_water_TEMP.pdb
@@ -286,26 +288,26 @@ writepsf NPRS1_popcw.psf
 file delete NPRS1_popc_water_TEMP.psf
 file delete NPRS1_popc_water_TEMP.pdb
 file delete NPRS1_popc_water_TEMP.log
-
+```
 
 - Ionization
 
 VMD Tcl commands:
-
+```
 mol delete all
 mol new NPRS1_popcw.psf
 mol addfile NPRS1_popcw.pdb
-
+```
 
 - Extensions -> Modeling -> Add Ions (check the notes)
 - Output prefix = NPRS1_popcwi
 - salt -> NaCl
 
 VMD Tcl commands:
-
+```
 mol new NPRS1_popcwi.psf
 mol addfile NPRS1_popcwi.pdb
-
+```
 #------------------------------------------------------------------------------------------
 
 (3) Minimize and equilibrate the resulting system with NAMD (4 stages -> Continuing jobs).
@@ -313,7 +315,7 @@ mol addfile NPRS1_popcwi.pdb
 (3.1) Melting of Lipid Tails (simulation in which everything except lipid tails, is fixed to induce the appropriate disorder of a fluid-like bilayer )
 
 VMD Tcl commands:
-
+```
 mol delete all
 mol new NPRS1_popcwi.psf
 mol addfile NPRS1_popcwi.pdb
@@ -325,6 +327,7 @@ N C14 H42 H43 H41 C12 H22 H23 H21 C13 H33 H31 H32)"]
 $fixed set beta 1
 $all writepdb NPRS1_popcwi.fix
 exit
+```
 
 - Stage 1 (check RUN_NPRS1_popcwimineq-01.conf)
 - use findbox.tcl -> chnage Periodic Boundary Conditions in RUN_NPRS1_popcwimineq-01.conf.
@@ -333,15 +336,17 @@ exit
 - run 250000 ;# 0.5 ns (using a 2 fs timestep)
 
 VMD Tcl commands:
-
+```
 mol new NPRS1_popcwi.psf
 mol addfile NPRS1_popcwi.pdb
 source findbox.tcl
 get_cell
 exit
+```
 
+```
 namd2 +p8 RUN_NPRS1_popcwimineq-01.conf > RUN_NPRS1_popcwimineq-01.log.out
-
+```
 
 
 
