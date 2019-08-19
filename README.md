@@ -395,6 +395,4 @@ VMD Tcl commands:
 namd2 +p8 RUN_NPRS1_popcwimineq-04.conf > RUN_NPRS1_popcwimineq-04.log.out
 ```
 
-###########
 Simulation of membrane bilayers has shown that the current CHARMM forcefield parameters do no reproduce the experimentally observed area per lipid over long MD trajectories. During the previous simulation steps, we let the are in the xy-plane fluctuate to permit packing of lipids against the protein. However, after good packing has been observed, one should keep the area in the xy-plane constant. Ideally, one should also compute the effective area per lipid in the system by computing the area of the simulations cell and subtracting from it the protein area.
-##########
